@@ -1,4 +1,4 @@
-variable "mykey" {}
+variable "springbootkey" {}
 variable "ami" {
   description = "amazon linux 2023 ami"
 }
