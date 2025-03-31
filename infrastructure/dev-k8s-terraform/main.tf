@@ -12,23 +12,24 @@ data "aws_vpc" "name" {
 }
 
 resource "aws_security_group" "k8s-sec-gr" {
-  name = var.sec-gr-k8s
+  name   = var.sec-gr-k8s
   vpc_id = data.aws_vpc.name
+
   tags = {
     Name = var.sec-gr-k8s
   }
 
-  ingress = {
-    from_port = 22
-    protocol = "tcp"
-    to_port = 22
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    protocol = "tcp"
-    from_port = 6443
-    to_port = 6443
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -40,19 +41,20 @@ resource "aws_security_group" "k8s-sec-gr" {
   }
 
   ingress {
-    from_port = 0
-    protocol  = "-1"
-    to_port   = 0
-    self = true
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
   }
 
   egress {
-    from_port = 0
-    protocol = "-1"
-    to_port = 0
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 
 resource "aws_iam_role" "petclinic-master-server-s3-role" {
   name = "petclinic-master-server-role"
