@@ -1,10 +1,9 @@
 provider "aws" {
-  region = "us-east-1"
+  region  = "us-east-1"
 }
 
 variable "sec-gr-k8s" {
   default = "petclinic-k8s-sec-group"
-  
 }
 
 data "aws_vpc" "name" {
@@ -56,7 +55,7 @@ resource "aws_security_group" "k8s-sec-gr" {
 
 
 resource "aws_iam_role" "petclinic-master-server-s3-role" {
-  name = "petclinic-master-server-role"
+  name               = "petclinic-master-server-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -72,10 +71,11 @@ resource "aws_iam_role" "petclinic-master-server-s3-role" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "petclinic_s3_policy" {
-  role = aws_iam_role.petclinic-master-server-s3-role.name
+  role       = aws_iam_role.petclinic-master-server-s3-role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
 }
 
@@ -84,53 +84,52 @@ resource "aws_iam_instance_profile" "petclinic-master-server-profile" {
   role = aws_iam_role.petclinic-master-server-s3-role.name
 }
 
-
 resource "aws_instance" "kube-master" {
   ami = "ami-005fc0f236362e99f"
   instance_type = "t3a.medium"
   iam_instance_profile = aws_iam_instance_profile.petclinic-master-server-profile.name
+  vpc_security_group_ids = [aws_security_group.k8s-sec-gr.id]
   key_name = "clarus"
   subnet_id = "subnet-0d6970c8dbdee2121"
-  vpc_security_group_ids = [aws_security_group.k8s-sec-gr]
   availability_zone = "us-east-1d"
   tags = {
     Name = "kube-master"
     Project = "tera-kube-ans"
     Role = "master"
     Id = "1"
-    enviroment = "dev"
+    environment = "dev"
   }
 }
 
- resource "aws_instance" "worker-1" {
+resource "aws_instance" "worker-1" {
   ami = "ami-005fc0f236362e99f"
   instance_type = "t3a.medium"
+  vpc_security_group_ids = [aws_security_group.k8s-sec-gr.id]
   key_name = "clarus"
-  subnet_id = "subnet-0d6970c8dbdee2121"
-  vpc_security_group_ids = [aws_security_group.k8s-sec-gr]
+  subnet_id = "subnet-0d6970c8dbdee2121"  
   availability_zone = "us-east-1d"
   tags = {
     Name = "worker-1"
     Project = "tera-kube-ans"
     Role = "worker"
     Id = "1"
-    enviroment = "dev"
+    environment = "dev"
   }
 }
 
- resource "aws_instance" "worker-2" {
+resource "aws_instance" "worker-2" {
   ami = "ami-005fc0f236362e99f"
   instance_type = "t3a.medium"
+  vpc_security_group_ids = [aws_security_group.k8s-sec-gr.id]
   key_name = "clarus"
-  subnet_id = "subnet-0d6970c8dbdee2121"
-  vpc_security_group_ids = [aws_security_group.k8s-sec-gr]
+  subnet_id = "subnet-0d6970c8dbdee2121"  
   availability_zone = "us-east-1d"
   tags = {
     Name = "worker-2"
     Project = "tera-kube-ans"
     Role = "worker"
     Id = "2"
-    enviroment = "dev"
+    environment = "dev"
   }
 }
 
